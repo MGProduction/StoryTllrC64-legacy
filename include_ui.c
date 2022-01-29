@@ -57,18 +57,6 @@ void scrollup()
  memmove(video_colorram+text_ty*40,video_colorram+(text_ty+1)*40,9*40); 
 }
 
-void cr()
-{
- REFRESH
- text_x=0;
- text_y++;
- if(text_ty+text_y>=SCREEN_H)
-  {  
-   scrollup();
-   text_y--;
-  }
-}
-
 void ui_clear()
 {
  text_y=0,text_x=0;
@@ -83,19 +71,6 @@ void ui_clear()
   memset(video_ram+text_ty*40,' ',(SCREEN_H-text_ty-1)*40);
   memset(video_colorram+text_ty*40,0,(SCREEN_H-text_ty-1)*40);
   }
-}
-
-void core_cr()
-{
- REFRESH
- txt_x=0;
- txt_y++;
- if((*txt==' ')||(*txt==FAKE_CARRIAGECR)) txt++; 
- if(txt_y>=SCREEN_H)
- {
-  scrollup();
-  txt_y--;
- }
 }
 
 #define ALIGN_LEFT   0
@@ -146,6 +121,32 @@ void _getnextch()
  else  
   _ch=*txt++;
  #endif
+}
+
+void cr()
+{
+ REFRESH
+ text_x=0;
+ text_y++;
+ if(text_ty+text_y>=SCREEN_H)
+  {  
+   scrollup();
+   text_y--;
+  }
+}
+
+void core_cr()
+{
+ REFRESH
+ txt_x=0;
+ txt_y++;
+ if((_ch==' ')||(_ch==FAKE_CARRIAGECR)) 
+  _getnextch();
+ if(txt_y>=SCREEN_H)
+ {
+  scrollup();
+  txt_y--;
+ }
 }
 
 void core_drawtext()
@@ -232,88 +233,6 @@ void core_drawtext()
   }
 }
 
-void _core_drawtext()
-{   
-  while(*txt)
-   {
-    u8 c=*txt;
-    if(c==FAKE_CARRIAGECR)
-     {
-      txt++;
-      core_cr();al++;
-     }
-    else
-     {
-      align=ALIGN_LEFT;spl=0;
-      ll=txt_x;
-      while(txt[ii]&&(ll<SCREEN_W)&&(txt[ii]!=FAKE_CARRIAGECR))
-      {
-       if(txt[ii]==ESCAPE_CHAR)
-        {
-         ii++;
-         if(txt[ii]==3)
-          align=ALIGN_CENTER;
-         ii++;
-        }
-       else
-        {
-        if(txt[ii]==' ')
-         spl=ll;
-        ll++;
-        }
-      }
-      if(ll>=SCREEN_W)
-       ll=spl;
-      switch(align)
-       {
-       case ALIGN_CENTER:
-         txt_x+=(SCREEN_W-ll)>>1;
-        break;
-        case ALIGN_RIGHT:
-         txt_x+=(SCREEN_W-ll);
-        break;
-       }
-      while(ii--)
-       {
-        c=*txt++;
-        if(c==ESCAPE_CHAR)
-        {
-         c=*txt++;
-         switch(c)
-         {
-         case 'g'-'a'+1:
-          txt_col=COLOR_GRAY2;
-          break;
-          case 'y'-'a'+1:
-          txt_col=COLOR_YELLOW;
-          break;
-         case 'w'-'a'+1:
-          txt_col=COLOR_WHITE;
-          break;
-         }
-         ii--;
-        }
-        else
-         {
-         video_colorram[txt_y*40+txt_x]=txt_col;                         
-         video_ram[txt_y*40+txt_x]=c+txt_rev;
-         txt_x++;
-         }
-      }     
-     c=*txt;
-     if(c==0)
-      break;
-     else
-     {
-      core_cr();
-      al++;
-     }
-     if(al>=8)
-      return;
-    }
-  }
-}
-
 void status_update()
 {
  strid=roomnameid[room];
@@ -370,14 +289,8 @@ char charmap(char c)
      else
       if(c==',')
        c=44;
-      else
-      if(c=='>')
-      c=62;
-     else
-      if(c=='_')
-       c=100;
-      else
-       c=c;
+      else      
+       c=0;
  return c;
 }
 

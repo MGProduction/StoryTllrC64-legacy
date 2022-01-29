@@ -387,8 +387,11 @@ int main()
          if(icmd<MAX_CMD)
           {
            ch=charmap(ch);
-           strcmd[icmd++]=ch;
-           strcmd[icmd]=0;
+           if(ch)
+            {
+             strcmd[icmd++]=ch;
+             strcmd[icmd]=0;
+            } 
           }    
         }
         parser_update();
