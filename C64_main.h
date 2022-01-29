@@ -12,6 +12,9 @@
 
 #include "mgLib/mgLib.h"
 
+#define IMPLEMENT_C_HBUNPACK
+#include "mgLib/hupack.c"
+
 #if defined(WIN32)
 void __asm__(const char*cmd,...);
 char cgetc();

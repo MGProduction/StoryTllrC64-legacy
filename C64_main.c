@@ -222,7 +222,7 @@ void os_roomimage_load()
 void font_load()
 {
  u8*tmp=FILECACHE1;
- unpack(font,tmp);
+ hunpack(font,tmp);
  memcpy(FONTMEM,tmp,128*8);
  for(i=0;i<128*8;i++)
   tmp[i]=255-tmp[i];
@@ -231,6 +231,7 @@ void font_load()
 #endif
 
 #if defined(advcartridgeondisk)
+//extern u8 cardmem[4];
 void loadcartridge()
 {
  FILE*f;
@@ -246,7 +247,7 @@ void loadcartridge()
    u16 iln,ln;
    
    fread(&iln,sizeof(iln),1,f); // size of cartridge
-   advcartridge=ADDR(0x6000);
+   advcartridge=ADDR(0x5000);
    fread(advcartridge,iln,1,f);
    
    fread(&iln,sizeof(iln),1,f);
@@ -424,3 +425,4 @@ int main()
  return 0;
 }
 
+//u8 cardmem[4];

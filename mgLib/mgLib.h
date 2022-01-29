@@ -17,7 +17,7 @@ u8*remapmem(u8*mem,u16 size);
 #define REMAPMEM(a,sizeofa) ((u8*)a)
 #endif
 
-#include "upk.h"
+//#include "upk.h"
 #include "vid.h"
 
 #endif

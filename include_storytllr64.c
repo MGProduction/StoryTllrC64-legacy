@@ -618,7 +618,7 @@ void adv_parse()
 
 void adv_reset()
 {
- unpack(origram,objnameid);
+ hunpack(origram,objnameid);
 }
 
 void adv_load()
