@@ -81,7 +81,7 @@ u8  buf_h,buf_oy;
 char*FILENAME(char*nm)
 {
  static char nn[256];
- sprintf(nn,"%s/img/%s",basepath,nm);
+ sprintf(nn,"%simg/%s",basepath,nm);
  return nn;
 }
 #else
@@ -235,7 +235,7 @@ void loadcartdrige()
 {
  FILE*f;
  char card[256];
- sprintf(card,"%s/advcartdrige",basepath);
+ sprintf(card,"%sadvcartdrige",basepath);
  f=fopen(card,"rb");
  if(f)
   {

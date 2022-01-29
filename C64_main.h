@@ -15,8 +15,11 @@
 #if defined(WIN32)
 void __asm__(const char*cmd,...);
 char cgetc();
-
-#define basepath "script_CloakOf64"
+#if defined(NDEBUG)
+#define basepath ""
+#else
+#define basepath "script_Once/"
+#endif
 #endif
 
 #define AUDIO

@@ -10,7 +10,7 @@ all: build_game
 build_game: 
 	cl65 -I .. $(TARGET) C64_main.c $(MGLIB) -o $(BINARY) $(VCFLAGS)
 	c1541.exe -format $(PROGRAM_NAME),666 d64 bin/$(PROGRAM_NAME).d64 -attach bin/$(PROGRAM_NAME).d64 -write bin/$(PROGRAM_NAME).prg $(PROGRAM_NAME)
-	res\addimages.bat bin/$(PROGRAM_NAME).d64
+	scripts\addimages.bat bin/$(PROGRAM_NAME).d64
 
 run:
 	x64sc.exe bin/$(PROGRAM_NAME).d64
