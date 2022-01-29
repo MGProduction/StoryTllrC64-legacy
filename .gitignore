@@ -5,6 +5,7 @@ script
 *.sln
 *.ncb
 *.suo
+*.user
 
 # Prerequisites
 *.d
