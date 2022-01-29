@@ -1,6 +1,10 @@
 # others
 bin
 script
+*.vcproj
+*.sln
+*.ncb
+*.suo
 
 # Prerequisites
 *.d
