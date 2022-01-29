@@ -14,61 +14,82 @@ There are a limited set of instructions and a limited set of metakeywords - usin
 
 Current allowed instructions are 
 
-generic
+### generic
 
   quit
+  
   start
+  
   load
+  
   save
 
-about variables
+### about variables
 
   setvar
+  
   addvar
   
   set
+  
   unset
   
-about ui
+### about ui
 
   clear
+  
   getkey
+  
   waitkey
+  
   msg
+  
   list
   
   showobj
   
   setroomimage
+  
   setroomoverlayimage
   
-about obj / room  
+### about obj / room  
 
   goto
   
   put
   
   setattr
+  
   unsetattr
   
   setobjname  
+  
   setroomname
   
-about conditions  
+### about conditions  
   
   withobj  
+  
   endwith
   
   if
+  
   ifis
+  
   ifisin
+  
   ifisroom
+  
   ifkey
+  
   ifnot
+  
   ifobjinattr
+  
   ifvar  
 
   else
+  
   endif
   
 
