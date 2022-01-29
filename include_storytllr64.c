@@ -44,7 +44,7 @@
 u8*txt,*etxt;
 u8 txt_x,txt_y,txt_col,txt_rev,txt_wrap;
 u8 text_y=0,text_x=0;
-u8 _ch,_bch;
+u8 _ch,_bch,al;
 // -----------------------------
 u8 room=meta_nowhere,nextroom=meta_nowhere,newroom,quit_request=0,text_attach;
 u8 rightactorimg=meta_none,leftactorimg=meta_none;
@@ -131,7 +131,7 @@ void _findstring()
 void draw_roomobj()
 {
  u8 i,k,c; 
- txt=tmp2;
+ al=0;txt=tmp2;
  for(k=c=i=0;i<obj_count;i++)
   if(objloc[i]==varroom)
    if((objattr[i]&varattr)==varattr)

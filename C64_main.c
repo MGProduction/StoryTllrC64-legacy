@@ -91,6 +91,7 @@ char*FILENAME(char*nm)
 
 #define status_y 14
 #define text_ty  (status_y+1)
+#define text_stoprange (SCREEN_H-text_ty-1)
 
 // ---------------------------------------------------------------
 #include "include_storytllr64.c"

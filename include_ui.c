@@ -57,9 +57,11 @@ void scrollup()
  memmove(video_colorram+text_ty*40,video_colorram+(text_ty+1)*40,9*40); 
 }
 
+u16 ii,ll,spl,align=0;
+
 void ui_clear()
 {
- text_y=0,text_x=0;
+ text_y=0,text_x=0;al=0;
  if(clearfull)
   {
    memset(video_ram+status_y*40,' ',(SCREEN_H-status_y)*40);
@@ -77,9 +79,7 @@ void ui_clear()
 #define ALIGN_RIGHT  1
 #define ALIGN_CENTER 2
 
-u16 al,ii,ll,spl,align=0;
-
-u8 _pch,b_bch,_cpl[2],_buffer[SCREEN_W+2],_cbuffer[SCREEN_W+2];
+u8 _pch,b_bch,_ech,_cpl[2],_buffer[SCREEN_W+2],_cbuffer[SCREEN_W+2];
 u8*btxt;
 
 void _savechpos()
@@ -96,6 +96,12 @@ void _getnextch()
 {
  _pch=_ch;
  #if defined(packed_strings)
+  if(_ech)
+   {
+    _ch=_ech;
+    _ech=0;
+   }
+  else  
   if(_bch)
    {
     _ch=_bch;
@@ -147,16 +153,22 @@ void core_cr()
   scrollup();
   txt_y--;
  }
+ al++;
 }
 
 void core_drawtext()
 {  
   _getnextch();
   while(_ch)
-   {    
+   {        
+    if(al+1>=text_stoprange) 
+     {
+      _ech=_ch;     
+      return;
+     }
     if(_ch==FAKE_CARRIAGECR)
      {
-      core_cr();al++;
+      core_cr();
       _getnextch();
      }
     else
@@ -205,7 +217,7 @@ void core_drawtext()
       if(ll+txt_x>=SCREEN_W)
        {
         _restorechpos();
-        ll=txt_x+spl;
+        ll=spl;
         _getnextch(); 
        }
       switch(align)
@@ -220,15 +232,10 @@ void core_drawtext()
       memcpy(video_ram+txt_y*40+txt_x,_buffer,ll);
       memcpy(video_colorram+txt_y*40+txt_x,_cbuffer,ll);
       txt_x+=ll;      
-     if(_ch==0)
-      break;
-     else
-     {
-      core_cr();
-      al++;
-     }
-     if(al>=8)
-      return;
+      if(_ch==0)
+       break;
+      else
+       core_cr();           
     }
   }
 }
@@ -244,7 +251,7 @@ void status_update()
   {
   memset(video_colorram+status_y*40,COLOR_YELLOW,40);
   memset(video_ram+status_y*40,160,40);
-  txt_col=COLOR_YELLOW;txt_rev=128;txt_x=0;txt_y=status_y;
+  al=0;txt_col=COLOR_YELLOW;txt_rev=128;txt_x=0;txt_y=status_y;
   core_drawtext();
   }
 }
@@ -297,7 +304,7 @@ char charmap(char c)
 void parser_update()
 {  
  txt=">";
- txt_col=COLOR_GRAY2;txt_rev=0;txt_x=0;txt_y=text_ty+text_y;
+ al=0;txt_col=COLOR_GRAY2;txt_rev=0;txt_x=0;txt_y=text_ty+text_y;
  core_drawtext();
  txt=strcmd;
  txt_col=COLOR_GRAY2;
@@ -379,6 +386,7 @@ void ui_text_write(u8*text)
   else
    ui_waitkey();
   }  
+ al++; 
 }
 
 void room_load()
