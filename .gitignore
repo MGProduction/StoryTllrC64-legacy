@@ -1,6 +1,7 @@
 # others
 bin
 script
+scripts
 *.vcproj
 *.sln
 *.ncb
