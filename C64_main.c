@@ -230,20 +230,24 @@ void font_load()
 }
 #endif
 
-#if defined(advcartdrigeondisk)
-void loadcartdrige()
+#if defined(advcartridgeondisk)
+void loadcartridge()
 {
  FILE*f;
+#if defined(WIN32) 
  char card[256];
- sprintf(card,"%sadvcartdrige",basepath);
+ sprintf(card,"%sadvcartridge",basepath);
  f=fopen(card,"rb");
+#else
+ f=fopen("advcartridge","rb");
+#endif  
  if(f)
   {
    u16 iln,ln;
    
-   fread(&iln,sizeof(iln),1,f); // size of cartdrige
-   advcartdrige=ADDR(0x6000);
-   fread(advcartdrige,iln,1,f);
+   fread(&iln,sizeof(iln),1,f); // size of cartridge
+   advcartridge=ADDR(0x6000);
+   fread(advcartridge,iln,1,f);
    
    fread(&iln,sizeof(iln),1,f);
    
@@ -257,51 +261,51 @@ void loadcartdrige()
    var_count=(u8)ln;
    
    fread(&ln,sizeof(ln),1,f);
-   advnames=advcartdrige+ln;    
+   advnames=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   advdesc=advcartdrige+ln;    
+   advdesc=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   msgs=advcartdrige+ln;    
+   msgs=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   verbs=advcartdrige+ln;    
+   verbs=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objs=advcartdrige+ln;    
+   objs=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   packdata=advcartdrige+ln;    
+   packdata=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   opcode_vrbidx=advcartdrige+ln;    
+   opcode_vrbidx=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   opcode_pos=(u16*)(advcartdrige+ln);    
+   opcode_pos=(u16*)(advcartridge+ln);    
    fread(&ln,sizeof(ln),1,f);
-   opcode_len=advcartdrige+ln;    
+   opcode_len=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   opcode_data=advcartdrige+ln;    
+   opcode_data=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objnameid=advcartdrige+ln;    
+   objnameid=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objdescid=advcartdrige+ln;    
+   objdescid=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objimg=advcartdrige+ln;    
+   objimg=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objattr=advcartdrige+ln;    
+   objattr=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   objloc=advcartdrige+ln;    
+   objloc=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   roomstart=advcartdrige+ln;    
+   roomstart=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   roomnameid=advcartdrige+ln;    
+   roomnameid=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   roomdescid=advcartdrige+ln;    
+   roomdescid=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   roomimg=advcartdrige+ln;    
+   roomimg=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   roomattr=advcartdrige+ln;    
+   roomattr=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   bitvars=advcartdrige+ln;    
+   bitvars=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   vars=advcartdrige+ln;    
+   vars=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
-   origram=advcartdrige+ln;    
+   origram=advcartridge+ln;    
    fread(&ln,sizeof(ln),1,f);
    origram_len=ln;
    fclose(f);
@@ -351,8 +355,8 @@ int main()
  while(1)
  {
  
-#if defined(advcartdrigeondisk)
-   loadcartdrige();
+#if defined(advcartridgeondisk)
+   loadcartridge();
 #endif 
 
    IMAGE_clear();
