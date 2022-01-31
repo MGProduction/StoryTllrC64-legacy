@@ -30,6 +30,22 @@
 // -----------------------------
 #include "storytllr64_data.h"
 
+// -----------------------------
+// ui coordinates
+// -----------------------------
+
+#define split_y 96
+#define status_y ((split_y/8)+1+1)
+#define text_ty  (status_y+1)
+#define text_stoprange (SCREEN_H-text_ty-1)
+
+#define TVIDEORAM_OFFSET (text_ty*40)
+#define TVIDEORAM_SIZE   (1000-TVIDEORAM_OFFSET)
+
+// -----------------------------
+// special characters
+// -----------------------------
+
 #define FAKE_CARRIAGECR 31
 #define ESCAPE_CHAR     92
 
@@ -53,8 +69,9 @@ u8 cmd,obj1,obj2;
 u8 clearfull;
 u8*str,*ostr,*strcmds;
 u8 strid,_strid;
-u8 ch;
-u16 i,j,ii;
+u8 ch,imageid;
+u8*imagemem;
+u16 i,j,ii,freemem;
 u8 cmdid,fail,opcode,var,varobj,varroom,varvalue,varattr,saved;
 // -----------------------------
 u8  ch,key,len,istack=0,thisobj,used;
@@ -70,7 +87,8 @@ u8  ormask[8]={1,2,4,8,16,32,64,128},
 // PROTOTYPES
 // -----------------------------
 void room_load();
-void os_roomimage_load();;
+void os_roomimage_load();
+void os_core_roomimage_load();
 void core_drawtext();
 void cr();
 void ui_text_write(u8*text);
@@ -99,13 +117,24 @@ void _getstring()
  ostr=str;
  while(_strid<strid)
  {
-  len=*str++;
-  str+=len;
+  len=*str++;  
+  if(len==255)
+   {
+    len=*str++;
+    str+=255;
+   } 
+  str+=len; 
   _strid++;
   ostr=str;
  } 
 len=*ostr++; 
-etxt=ostr+len;_bch=0;
+etxt=ostr+len;
+if(len==255)
+ {
+  len=*ostr++; 
+  etxt+=1+len;
+ }
+_bch=0;
 }
 
 void _findstring()
@@ -264,6 +293,11 @@ void adv_exec()
       saved++;
      break;
      case op_dbg:
+      {       
+       itoa(freemem,tmp,10);       
+       ostr=tmp;
+       ui_text_write(ostr);       
+      }
      break;
      case op_clear:
       ui_clear();
@@ -302,6 +336,7 @@ void adv_exec()
       _getroom();
       var=pcode[i++];
       //roomimg[varroom]=var;
+      roomovrimg[varroom]=var;
       os_roomimage_load();
      break;
      case op_setroomimage:
@@ -428,8 +463,11 @@ void adv_exec()
       case op_withobj:
        thisobj=var=pcode[i++];
        if(var!=obj1)
-        if((var==meta_unknown)&&(obj1==meta_none))
+        if(obj1==meta_none)
+         if(var==meta_unknown)        
           ;
+         else 
+          fail=2;
         else
          if(var==meta_every)
           thisobj=obj1;
@@ -590,7 +628,10 @@ void adv_parse()
   if(cmdid!=255)
    {
     if(cmd==meta_unknown)
-     cmd=cmdid;
+     {
+      cmd=cmdid;
+      strncpy(vrb,tmp,VRBLEN-1);
+     } 
     else
      if((obj1==meta_none)||(obj1==meta_unknown))
       obj1=cmdid;
