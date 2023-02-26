@@ -392,13 +392,13 @@ void ui_text_write(u8*text)
   core_drawtext();
   if(_ch==0)
    {
-   if(txt[-1]=='+')
-    {text_attach=1;if(txt_x) txt_x--;}
-   else
-    {
-    text_y=txt_y-text_ty;
-     cr();
-    }
+    if(txt[-1]=='+')
+     {text_attach=1;if(txt_x) txt_x--;}
+    else
+     {
+     text_y=txt_y-text_ty;
+      cr();
+     }
    break;
    }
   else

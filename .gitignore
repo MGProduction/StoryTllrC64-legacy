@@ -17,6 +17,9 @@ scripts
 *.ko
 *.obj
 *.elf
+*.dbg
+*.map
+*.lbl
 
 # Linker output
 *.ilk

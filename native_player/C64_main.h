@@ -21,7 +21,7 @@ char cgetc();
 #if defined(NDEBUG)
 #define basepath ""
 #else
-#define basepath "scripts/Once/"
+#define basepath "scripts/Accuse/"
 #endif
 #endif
 
@@ -29,7 +29,7 @@ char cgetc();
 #define USE_DISK
 #define USE_FONT
 
-//#define USE_HIMAGE
+#define USE_HIMAGE
 
 //#define ONTHEFLYCLEAN
 

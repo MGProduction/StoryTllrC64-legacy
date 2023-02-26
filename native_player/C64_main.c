@@ -323,6 +323,8 @@ void loadcartridge()
    ln=*(u16*)tmp2;tmp2+=sizeof(ln);   
    objs=advcartridge+ln;    
    ln=*(u16*)tmp2;tmp2+=sizeof(ln);   
+   rooms=advcartridge+ln;    
+   ln=*(u16*)tmp2;tmp2+=sizeof(ln);   
    packdata=advcartridge+ln;    
    ln=*(u16*)tmp2;tmp2+=sizeof(ln);   
    opcode_vrbidx=advcartridge+ln;    
@@ -378,6 +380,12 @@ void loadcartridge()
 
 void os_init()
 {
+ #if defined(WIN32)
+ 
+ #else
+ _randomize();
+ #endif
+
  vid_setcolorBKG(COLOR_BLACK);
  vid_setcolorBRD(COLOR_BLACK);
 

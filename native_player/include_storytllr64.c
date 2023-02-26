@@ -62,10 +62,13 @@ u8 txt_x,txt_y,txt_col,txt_rev,txt_wrap;
 u8 text_y=0,text_x=0;
 u8 _ch,_bch,al;
 // -----------------------------
-u8 room=meta_nowhere,nextroom=meta_nowhere,newroom,quit_request=0,text_attach;
+u8 room=meta_nowhere,nextroom=meta_nowhere,newroom,quit_request=0,text_attach,text_continue;
 u8 rightactorimg=meta_none,leftactorimg=meta_none;
 // -----------------------------
-u8 cmd,obj1,obj2;
+#define kind_none 0
+#define kind_obj  1
+#define kind_room 2
+u8 cmd,obj1,obj2,obj1k,obj2k;
 u8 clearfull;
 u8*str,*ostr,*strcmds;
 u8 strid,_strid;
@@ -74,7 +77,7 @@ u8*imagemem;
 u16 i,j,ii,freemem;
 u8 cmdid,fail,opcode,var,varobj,varroom,varvalue,varattr,saved;
 // -----------------------------
-u8  ch,key,len,istack=0,thisobj,used;
+u8  key,len,istack=0,thisobj,used;
 u8 *pcode;
 u16 pcodelen;
 u8  executed;
@@ -209,6 +212,19 @@ void _getroom()
  varroom=pcode[i++];       
  if(varroom==meta_here)
   varroom=room;
+ else
+  if(varroom==meta_this)
+   varroom=obj1;
+  else
+  if(varroom==meta_that)
+   varroom=obj2;
+  else
+  if(varroom==meta_oneofroom)
+   {
+    ch=pcode[i++];
+    varroom=pcode[i+rand()%ch];
+    i+=ch;
+   }
 }
 
 void _getobj()
@@ -216,6 +232,16 @@ void _getobj()
  varobj=pcode[i++];       
  if(varobj==meta_this)
   varobj=thisobj;
+ else
+  if(varobj==meta_that)
+   varobj=obj2;
+  else
+  if(varroom==meta_oneofobj)
+   {
+    ch=pcode[i++];
+    varobj=pcode[i+rand()%ch];
+    i+=ch;
+   }
 }
 
 // -----------------------------
@@ -237,43 +263,62 @@ void adv_exec()
      used++; 
      switch(opcode)
       {
+     case op_msgroom:
+     case op_msgobj:
+      {
+       strid=pcode[i++];
+       strid=vars[strid];      
+       str=advnames;
+       if(opcode==op_msgobj)
+        strid=objnameid[strid];
+       else
+        strid=roomnameid[strid];
+       _getstring();
+       ui_text_write(ostr);
+      }
+      break;
+     case op_msgvar:
+      {
+       strid=pcode[i++];
+       strid=vars[strid];
+       ch=0;
+       if(strid>99)
+        {tmp[ch++]='0'+strid/100;strid%=100;}
+       if(strid>9)
+        {tmp[ch++]='0'+strid/10;strid%=10;}
+       tmp[ch++]='0'+strid;
+       tmp[ch]=0;
+       ostr=tmp;etxt=ostr+ch;
+       ui_text_write(ostr);
+      }
+      break;
      case op_msg:
       {
        strid=pcode[i++];
-       if(strid==meta_score)
-       {
-        tmp[0]='0'+vars[1];
-        tmp[1]='/';
-        tmp[2]='0'+vars[2];tmp[3]=0;
-        ostr=tmp;
-       }
-       else
+       switch(strid)
         {
-        switch(strid)
+        case meta_objdesc:
          {
-         case meta_objdesc:
-          {
-           str=advdesc;
-           strid=objdescid[thisobj];
-          }
-         break;
-         case meta_roomname:
-          {
-           str=advnames;
-           strid=roomnameid[room];
-          }
-         break;
-         case meta_roomdesc:
-          {
-           str=advdesc;
-           strid=roomdescid[room];
-          }
-          break;
-         default:
-          str=msgs;
+          str=advdesc;
+          strid=objdescid[thisobj];
          }
-        _getstring();
+        break;
+        case meta_roomname:
+         {
+          str=advnames;
+          strid=roomnameid[room];
+         }
+        break;
+        case meta_roomdesc:
+         {
+          str=advdesc;
+          strid=roomdescid[room];
+         }
+         break;
+        default:
+         str=msgs;
         }
+       _getstring();
        ui_text_write(ostr);       
       }
      break;
@@ -354,7 +399,7 @@ void adv_exec()
       {
        _getobj();
        _getroom();
-        objloc[varobj]=varroom;
+       objloc[varobj]=varroom;
       }
      break;
      case op_set:
@@ -369,7 +414,19 @@ void adv_exec()
      case op_addvar:
      case op_setvar:
       varobj=pcode[i++];       
-      var=pcode[i++];    
+      var=pcode[i++];   
+      if((var==meta_oneofroom)||(var==meta_oneofobj))
+       {
+        ch=pcode[i++];   
+        var=pcode[i+rand()%ch];
+        i+=ch;
+       }
+      else
+       if(var==meta_this)
+        var=obj1;
+       else
+        if(var==meta_that)
+         var=obj2;
       switch(opcode)
        {
         case op_addvar:
@@ -406,6 +463,9 @@ void adv_exec()
       case op_ifis:
        _getobj();
        var=pcode[i++];    
+       if(varobj==meta_none)
+        fail=3;
+       else
        if((objattr[varobj]&var)!=var)
         fail=3;
       break;
@@ -449,12 +509,33 @@ void adv_exec()
              fail=3;
            }
           else
+          if(varroom==meta_available)
+           {
+            if(objloc[varobj]==meta_inventory)
+             ;
+            else
+             if((objloc[varobj]==room)&&(objattr[varobj]&attr_visible))
+              ;
+             else
+              fail=3;
+           }
+          else
           if(objloc[varobj]!=varroom)
            fail=3;
           break;
          }
         }
       break;           
+      case op_ifisaroom:
+       var=pcode[i++];
+       if((var==meta_this)&&(obj1k==kind_room))
+        ;
+       else
+       if((var==meta_that)&&(obj2k==kind_room))
+        ;
+       else
+        fail=3;
+      break;
       case op_ifisroom:
        var=pcode[i++];
        if(var!=room)
@@ -491,7 +572,19 @@ void adv_exec()
       case op_ifvar:
        varobj=pcode[i++];       
        var=pcode[i++];       
-       varroom=pcode[i++];       
+       varroom=pcode[i++];      
+       switch(varroom)
+        {
+        case meta_this:
+         varroom=obj1;
+         break;
+        case meta_that:
+          varroom=obj2;
+          break;
+         case meta_here:
+          varroom=room;
+          break;
+        }
        switch(var)
         {
          case 0:
@@ -616,7 +709,7 @@ void adv_run()
 void adv_parse()
 {
  ostr=str;
- cmd=meta_unknown;obj1=obj2=meta_none;
+ cmd=meta_unknown;obj1=obj2=meta_none,obj1k=obj2k=kind_none;
  while(*ostr)
  {
   _gettmp();
@@ -633,16 +726,30 @@ void adv_parse()
       strncpy(vrb,tmp,VRBLEN-1);
      } 
     else
-     if((obj1==meta_none)||(obj1==meta_unknown))
-      obj1=cmdid;
+     if(obj1k==kind_none)
+      {obj1=cmdid;obj1k=kind_obj;}
      else
-      if(obj2==meta_none)
-       obj2=cmdid;
+      if(obj2k==kind_none)
+       {obj2=cmdid;obj2k=kind_obj;}
    }
   else
    if(cmd!=meta_unknown)
-    if(obj1==meta_none)
-     obj1=meta_unknown;
+    {
+     str=rooms;
+     _findstring();
+     if(obj1k==kind_none)
+      {
+       if(cmdid!=255)
+        {obj1=cmdid;obj1k=kind_room;}
+       else
+       if(obj1==meta_none)
+        obj1=meta_unknown;
+      }
+     else
+      if(obj2k==kind_none)
+       if(cmdid!=255)
+        {obj2=cmdid;obj2k=kind_room;}
+    }
   while(*ostr&&(*ostr==' ')) ostr++;
  }
  adv_run();
