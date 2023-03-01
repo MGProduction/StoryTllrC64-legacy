@@ -65,6 +65,9 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+native_player/win_mgLib/
+native_player/win_bin/
+
 script_compiler/*.aps
 script_compiler/*.h
 script_compiler/*.c

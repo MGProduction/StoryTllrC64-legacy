@@ -1,5 +1,5 @@
 #if defined(WIN32)
-#include "mgLib/fakeC64.h"
+#include "win_mgLib/fakeC64.h"
 #else
 #include <c64.h>
 #endif
@@ -21,7 +21,7 @@ char cgetc();
 #if defined(NDEBUG)
 #define basepath ""
 #else
-#define basepath "scripts/Accuse/"
+#define basepath "../samples/accuse/"
 #endif
 #endif
 
