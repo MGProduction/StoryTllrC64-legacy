@@ -34,6 +34,6 @@ It's a nice way to proceed if your game is small.
 
 sample command (to run inside samples\accuse folder): **..\bin\script_compiler accuse.hjt ..\..\native_player\storytllr64_data.h advcartdrige**
 
-then (moving into native_compiler folder): **make** (after changing **BINARY = bin/<gamename>.prg** part inside Makefile
+then (moving into native_compiler folder): **make** (after changing **BINARY = bin/[gamename].prg** part inside Makefile
 
 after these commands you'll get your **prg** game inside bin subfolder
