@@ -2,7 +2,7 @@ PROGRAM_NAME = storytllr64
 TARGET = -tc64
 VCFLAGS = -u __EXEHDR__ -O -g -Wl "--mapfile,bin/$(PROGRAM_NAME).map" -Wl "--dbgfile,bin/$(PROGRAM_NAME).dbg" -Ln "bin/$(PROGRAM_NAME).lbl" 
 CFLAGS = -u __EXEHDR__ -O --static-locals
-BINARY = bin/$(PROGRAM_NAME).prg
+BINARY = ../samples/bin/$(PROGRAM_NAME).prg
 MGLIB = mgLib/vid_asm_minimal.s mgLib/hupack.s mgLib/mem_asm_minimal.s -I mgLib
 
 all: build_game 

@@ -29,7 +29,7 @@ char cgetc();
 #define USE_DISK
 #define USE_FONT
 
-#define USE_HIMAGE
+//#define USE_HIMAGE
 
 //#define ONTHEFLYCLEAN
 

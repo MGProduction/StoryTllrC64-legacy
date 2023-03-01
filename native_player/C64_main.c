@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------
-// Copyright (c) 2021/2022 Marco Giorgini
+// Copyright (c) 2021/2023 Marco Giorgini
 // ---------------------------------------------------------------
 //
 // Permission is hereby granted, free of charge, to any person
@@ -97,7 +97,8 @@ char*FILENAME(char*nm)
 // ---------------------------------------------------------------
 #include "include_ui.c"
 // ---------------------------------------------------------------
-#if defined(USE_HIMAGE)
+#if !defined(advcartridgeondisk)
+#define USE_HIMAGE
 #include "images.h"
 #endif
 // ---------------------------------------------------------------

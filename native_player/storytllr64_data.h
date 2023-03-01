@@ -1,6 +1,6 @@
 #define packed_strings 4
 
-#define string_max_len 251
+#define string_max_len 210
 
 u8 opcodeattr[40]={131,129,129,1,1,1,1,129,130,2,3,2,3,2,2,2,4,4,131,129,130,130,130,130,131,129,129,130,131,131,131,131,131,131,130,129,130,131,129,2};
 
@@ -99,87 +99,9 @@ u8*bitvars;
 u8*vars;
 u8*origram;
 
-#define room_start 0
-#define room_hallway 1
-#define room_library 2
-#define room_entrance 3
-#define room_bedroom 4
-#define room_dungeon 5
-
-#define obj_bed 0
-#define obj_blankets 1
-#define obj_books 2
-#define obj_boss 3
-#define obj_button 4
-#define obj_chair 5
-#define obj_door 6
-#define obj_gun 7
-#define obj_knife 8
-#define obj_note 9
-#define obj_pepper 10
-#define obj_picture 11
-#define obj_plaque 12
-#define obj_poison 13
-#define obj_salt 14
-#define obj_table 15
-#define obj_thyme 16
-
-#define vrb_abandon 0
-#define vrb_about 1
-#define vrb_accuse 2
-#define vrb_close 3
-#define vrb_d 4
-#define vrb_drink 5
-#define vrb_drop 6
-#define vrb_e 7
-#define vrb_elapsed 8
-#define vrb_give_up 9
-#define vrb_help 10
-#define vrb_imacheater 11
-#define vrb_inventory 12
-#define vrb_invite 13
-#define vrb_load 14
-#define vrb_lock 15
-#define vrb_mem 16
-#define vrb_n 17
-#define vrb_ne 18
-#define vrb_nw 19
-#define vrb_onenter 20
-#define vrb_onfirst 21
-#define vrb_onleave 22
-#define vrb_open 23
-#define vrb_pull 24
-#define vrb_push 25
-#define vrb_quit 26
-#define vrb_read 27
-#define vrb_restart 28
-#define vrb_s 29
-#define vrb_save 30
-#define vrb_score 31
-#define vrb_se 32
-#define vrb_surrender 33
-#define vrb_sw 34
-#define vrb_take 35
-#define vrb_talk 36
-#define vrb_u 37
-#define vrb_unlock 38
-#define vrb_use 39
-#define vrb_w 40
-#define vrb_x 41
-#define vrb_xyzzy 42
-
-#define var_tmp 0
-#define var_time 1
-#define var_murderer 2
-#define var_murderweapon 3
-#define var_murderlocation 4
-#define var_accused 5
-#define var_accusedweapon 6
-#define var_score 7
-
+#define vrb_onfirst 0
+#define vrb_onenter 1
+#define vrb_onleave 2
 
 #define attr_visible 1
-#define attr_listable 2
-#define attr_takeable 4
-#define attr_actor 8
 

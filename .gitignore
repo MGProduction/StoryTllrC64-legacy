@@ -65,3 +65,21 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+script_compiler/*.h
+script_compiler/*.c
+script_compiler/*.rc
+script_compiler/*.sln
+script_compiler/Debug
+script_compiler/Release
+
+samples/accuse/bin
+samples/accuse/tmp
+samples/accuse/*.h
+samples/accuse/advcartridge
+samples/accuse/*.bat
+
+samples/cloak_of_darkness/bin
+samples/cloak_of_darkness/tmp
+samples/cloak_of_darkness/*.h
+samples/cloak_of_darkness/advcartridge
+samples/cloak_of_darkness/*.bat
