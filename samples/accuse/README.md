@@ -6,5 +6,5 @@ This replayable IF game is a derivative work (i.e. I "translated" the original I
 
 My game page (it may be an older versione, compared to script/code here): https://marcogiorgini.itch.io/accuse-c64
 
-Game licence: GPL3
+Game licence: **GPL3**
 
