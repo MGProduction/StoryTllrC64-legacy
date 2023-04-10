@@ -75,7 +75,7 @@ u8 strid,_strid;
 u8 ch,imageid;
 u8*imagemem;
 u16 i,j,ii,freemem;
-u8 cmdid,fail,opcode,var,varobj,varroom,varvalue,varattr,saved;
+u8 cmdid,fail,opcode,thisopcode,var,varobj,varroom,varvalue,varattr,saved;
 // -----------------------------
 u8  key,len,istack=0,thisobj,used;
 u8 *pcode;
@@ -90,6 +90,7 @@ u8  ormask[8]={1,2,4,8,16,32,64,128},
 // PROTOTYPES
 // -----------------------------
 void room_load();
+void adv_run();
 void os_roomimage_load();
 void os_core_roomimage_load();
 void core_drawtext();
@@ -103,7 +104,7 @@ void ui_room_update();
 
 #define ch_sep 124
 
-void _gettmp()
+/*void _gettmp()
 {
  i=0;
  while(*ostr&&(*ostr!=' '))
@@ -112,7 +113,7 @@ void _gettmp()
   else
    ostr++;
  tmp[i]=0;
-}
+}*/
 
 void _getstring()
 {
@@ -146,17 +147,24 @@ void _findstring()
  while(str[i])
   {
    len=str[i++];   
-   if(str[i]==tmp[0])
-    if(tmp[len]==0)
-     if(memcmp(tmp,str+i,len)==0)
+   if(str[i]==ostr[0])
+    if((ostr[len]==0)||(ostr[len]==' '))
+     if(memcmp(ostr,str+i,len)==0)
       {
-       i+=len;
+       memcpy(tmp,str+i,len);tmp[len]=0;
+       i+=len;ostr+=len;
        cmdid=str[i];
        return;
       } 
    i+=len; 
    i++;
   }
+ i=0;
+ while(*ostr&&(*ostr!=' '))
+  if(i<32)
+   tmp[i++]=*ostr++;
+  else
+   ostr++;
  cmdid=255;
 }
 
@@ -248,10 +256,28 @@ void _getobj()
 // OPCODES PLAYER
 // -----------------------------
 
+u16 stack_i;
+u8  stack_used,stack_istack,stack_fail,stack_thisopcode;
+
+void adv_gosub()
+{
+ stack_thisopcode=thisopcode;stack_i=i;stack_used=used;stack_istack=istack;stack_fail=fail;
+
+ adv_run();
+
+ thisopcode=stack_thisopcode;
+ pcode=opcode_data+opcode_pos[thisopcode];
+ pcodelen=opcode_len[thisopcode];
+ i=stack_i;
+ used=stack_used;
+ istack=stack_istack;
+ fail=stack_fail;
+}
+
 void adv_exec()
 { 
- used=istack=fail=0;
- thisobj=255;
+ used=istack=fail=0;thisopcode=opcode;
+ thisobj=obj1;
  i=0;
  while(i<pcodelen) 
   {     
@@ -294,32 +320,46 @@ void adv_exec()
       break;
      case op_msg:
       {
-       strid=pcode[i++];
-       switch(strid)
+       var=pcode[i++];
+       switch(var)
         {
+        case meta_roomdesc:
         case meta_objdesc:
          {
           str=advdesc;
-          strid=objdescid[thisobj];
+          if(var==meta_objdesc)
+           strid=objdescid[thisobj];
+          else
+           strid=roomdescid[room];
          }
         break;
         case meta_roomname:
+        case meta_objname:
          {
           str=advnames;
-          strid=roomnameid[room];
+          if(var==meta_objname)
+           strid=objnameid[thisobj];
+          else
+           strid=roomnameid[room];
          }
         break;
-        case meta_roomdesc:
-         {
-          str=advdesc;
-          strid=roomdescid[room];
-         }
-         break;
         default:
          str=msgs;
+         strid=var;
         }
-       _getstring();
-       ui_text_write(ostr);       
+       if(strid==255)
+        {
+         if(var==meta_roomdesc)
+         {
+          cmd=vrb_ondesc;
+          adv_gosub();
+         }
+        }
+       else
+        {
+        _getstring();
+        ui_text_write(ostr);       
+        }
       }
      break;
 
@@ -536,6 +576,23 @@ void adv_exec()
        else
         fail=3;
       break;
+      case op_ifundef:
+       var=pcode[i++];
+       switch(var)
+        {
+         case meta_objdesc:
+          strid=objdescid[thisobj];
+         break;
+         case meta_roomname:
+          strid=roomnameid[room];
+         break;
+         case meta_roomdesc:
+          strid=roomdescid[thisobj];
+         break;
+        }
+       if(strid!=255)
+        fail=3;
+      break;
       case op_ifisroom:
        var=pcode[i++];
        if(var!=room)
@@ -710,9 +767,10 @@ void adv_parse()
 {
  ostr=str;
  cmd=meta_unknown;obj1=obj2=meta_none,obj1k=obj2k=kind_none;
+ while(*ostr&&(*ostr==' ')) ostr++;
  while(*ostr)
  {
-  _gettmp();
+  //_gettmp();
   if(cmd==meta_unknown)
    str=verbs;
   else
@@ -758,6 +816,10 @@ void adv_parse()
    newroom=nextroom;nextroom=meta_nowhere;
    room_load();
   }
+ else
+ {
+  cmd=vrb_onturn;obj1=255;adv_run();
+ }
 }
 
 // -----------------------------

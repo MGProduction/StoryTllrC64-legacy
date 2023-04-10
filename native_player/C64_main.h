@@ -21,7 +21,7 @@ char cgetc();
 #if defined(NDEBUG)
 #define basepath ""
 #else
-#define basepath "../samples/accuse/"
+#define basepath "../wip/sample/"
 #endif
 #endif
 
