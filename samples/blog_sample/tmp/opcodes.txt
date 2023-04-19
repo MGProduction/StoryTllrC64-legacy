@@ -1,0 +1,128 @@
+onfirst[0]::$start[0] = $12/18
+	msg[149]
+onfirst[0]::outside[3] = $19/25
+	msg[149]
+onfirst[0]::$everywhere[242] = $08/8
+	clear[129]
+onenter[1]::$everywhere[242] = $08/8
+	clear[129]
+u[5]::$everywhere[242] = $01/1
+	msg[149]
+d[6]::$everywhere[242] = $01/1
+	msg[149]
+s[7]::livingroom[2] = $18/24
+	ifvar[146]
+	goto[136]
+s[7]::$everywhere[242] = $01/1
+	msg[149]
+n[8]::outside[3] = $14/20
+	goto[136]
+n[8]::$everywhere[242] = $01/1
+	msg[149]
+w[9]::livingroom[2] = $17/23
+	goto[136]
+w[9]::$everywhere[242] = $01/1
+	msg[149]
+e[10]::bedroom[1] = $14/20
+	goto[136]
+e[10]::$everywhere[242] = $01/1
+	msg[149]
+se[11]::$everywhere[242] = $01/1
+	msg[149]
+sw[12]::$everywhere[242] = $01/1
+	msg[149]
+ne[13]::$everywhere[242] = $01/1
+	msg[149]
+nw[14]::$everywhere[242] = $01/1
+	msg[149]
+x[15]::bedroom[1] = $13/19
+	withobj[168]
+	ifisin[140]
+	msg[149]
+x[15]::$everywhere[242] = $02/2
+	withobj[168]
+	msg[149]
+x[15]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+take[16]::$everywhere[242] = $03/3
+	withobj[168]
+	ifobjinattr[144]
+	ifis[138]
+	put[153]
+take[16]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+drop[17]::$everywhere[242] = $04/4
+	withobj[168]
+	ifisin[140]
+	ifis[138]
+	put[153]
+drop[17]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+use[18]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+push[19]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+pull[20]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+open[21]::livingroom[2] = $15/21
+	withobj[168]
+	ifvar[146]
+	msg[149]
+open[21]::$everywhere[242] = $05/5
+	ifisin[140]
+	ifis[138]
+	ifis[138]
+	msg[149]
+open[21]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+close[22]::$everywhere[242] = $06/6
+	ifisin[140]
+	ifis[138]
+	ifis[138]
+	unsetattr[166]
+close[22]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+lock[23]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+unlock[24]::livingroom[2] = $16/22
+	withobj[168]
+	ifvar[146]
+	msg[149]
+unlock[24]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+help[25]::$everywhere[242] = $09/9
+	msg[149]
+inventory[26]::$everywhere[242] = $0a/10
+	ifobjinattr[144]
+	msg[149]
+score[27]::$everywhere[242] = $0b/11
+	msg[149]
+quit[28]::$everywhere[242] = $0c/12
+	msg[149]
+restart[29]::$everywhere[242] = $0d/13
+	msg[149]
+save[30]::$everywhere[242] = $0e/14
+	save[155]
+load[31]::$everywhere[242] = $0f/15
+	msg[149]
+mem[32]::$everywhere[242] = $10/16
+	dbg[130]
+about[33]::$everywhere[242] = $11/17
+	msg[149]
+onfirst[237]::$everywhere[242] = $00/0
+	withobj[168]
+	msg[149]
+onfirst[238]::$everywhere[242] = $01/1
+	msg[149]
+onfirst[255]::$everywhere[242] = $07/7
+	msg[149]
